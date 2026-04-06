@@ -15,26 +15,28 @@ jobs:
       - name: Select Xcode version
         run: sudo xcode-select -s /Applications/Xcode_16.2.app
 
-      - name: Build Archive
+      - name: Build App
         run: |
-          xcodebuild archive \
+          xcodebuild \
             -project HTMLOS.xcodeproj \
             -scheme HTMLOS \
             -configuration Release \
             -sdk iphoneos \
-            -archivePath build/HTMLOS.xcarchive \
+            -destination 'generic/platform=iOS' \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
             PROVISIONING_PROFILE="" \
             DEVELOPMENT_TEAM="" \
             ENABLE_PREVIEWS=NO \
-            SWIFT_OPTIMIZATION_LEVEL="-Onone"
+            SWIFT_OPTIMIZATION_LEVEL="-Onone" \
+            clean build \
+            CONFIGURATION_BUILD_DIR=build/Release-iphoneos
 
       - name: Package IPA
         run: |
           mkdir -p Payload
-          cp -r build/HTMLOS.xcarchive/Products/Applications/HTMLOS.app Payload/
+          cp -r build/Release-iphoneos/HTMLOS.app Payload/
           zip -r HTMLOS.ipa Payload
 
       - name: Upload IPA as Artifact
