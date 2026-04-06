@@ -28,6 +28,7 @@ jobs:
             CODE_SIGN_IDENTITY="" \
             PROVISIONING_PROFILE="" \
             DEVELOPMENT_TEAM="" \
+            SWIFT_OPTIMIZATION_LEVEL="-Onone" \
             clean build \
             CONFIGURATION_BUILD_DIR=build/Release-iphoneos
 
