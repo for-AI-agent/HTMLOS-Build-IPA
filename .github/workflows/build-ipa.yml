@@ -30,6 +30,7 @@ jobs:
             PROVISIONING_PROFILE="" \
             DEVELOPMENT_TEAM="" \
             clean build \
+            SWIFT_OPTIMIZATION_LEVEL="-Onone" \
             CONFIGURATION_BUILD_DIR=build/Release-iphoneos
 
       - name: Package IPA
