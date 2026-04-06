@@ -8,13 +8,12 @@ on:
 jobs:
   build:
     runs-on: macos-latest
-
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Select Xcode version
-        run: sudo xcode-select -s /Applications/Xcode.app
+        run: sudo xcode-select -s /Applications/Xcode_16.2.app
 
       - name: Build unsigned IPA (no signing)
         run: |
@@ -23,26 +22,23 @@ jobs:
             -scheme HTMLOS \
             -configuration Release \
             -sdk iphoneos \
-            -destination generic/platform=iOS \
+            -destination 'generic/platform=iOS' \
             CODE_SIGNING_ALLOWED=NO \
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGN_IDENTITY="" \
             PROVISIONING_PROFILE="" \
             DEVELOPMENT_TEAM="" \
             clean build \
-            SWIFT_OPTIMIZATION_LEVEL="-Onone" \
-            CONFIGURATION_BUILD_DIR=build/Release-iphoneos
+            CONFIGURATION_BUILD_DIR=build/Release-iphoneos || { echo "Build failed, checking logs..."; exit 1; }
 
       - name: Package IPA
         run: |
           mkdir -p Payload
           cp -r build/Release-iphoneos/HTMLOS.app Payload/
           zip -r HTMLOS.ipa Payload
-          rm -rf Payload
 
       - name: Upload IPA as Artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/artifacts@v4
         with:
           name: HTMLOS-IPA
           path: HTMLOS.ipa
-          retention-days: 30
